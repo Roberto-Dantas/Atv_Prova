@@ -85,6 +85,7 @@ const divElemento=[],div1Elemento=[],h2Elemento=[],div2Elemento=[],spanElemento=
 
 function finalizar(tE) {
     pause()
+    localStorage.clear()
      document.querySelector('.conteudo').style.marginTop="10%"
     document.querySelector('.bloco').innerHTML = "<div class='parteIF'></div><div class='parteQ'><div>";
     
