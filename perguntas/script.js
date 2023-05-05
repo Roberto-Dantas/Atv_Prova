@@ -23,7 +23,7 @@ if(typeof data === 'object') {
     nSA = selecionados
     proxima(numPergunta)
 }else{
-    throw new Error('Sem conexão com a Planilha dos dados');
+    throw new Error('Sem conexão com a planilha dos dados');
 }
 
 //clique alternativa
@@ -39,7 +39,7 @@ document.querySelectorAll('.inputs li').forEach(alternativa => {
             cancelButtonText:'NÃO'
         }).then((pass) => { 
             if (pass.isConfirmed) {
-                definirTR()
+                definirTR(true)
                 escolhida[numPergunta-1] = {a:alternativa.id,t:`${totalR}`}
                 proxima(numPergunta)
             }
@@ -230,17 +230,33 @@ function validar(numQts) {
 }
 
 //TEMPORIZADOR
-function definirTR() {
+function definirTR(d) {
     let totalQs = 60 - second
     totalQs = returnData(totalQs)
     let totalQm = questaoData.tempo-1 - minute
     totalQm = returnData(totalQm)
-            
-    if(totalQm === "00") {
-        totalR = `${totalQs} segundos`
+    
+    if(d) {
+        var min
+        var sec
+        if(minute <= 10) {
+            min = `0${minute}`
+        }else{
+            min = minute
+        }
+        
+        if(sec <= 10) {
+            sec = `0${second}`
+        }else{
+            sec = second
+        }
+        
+        totalR = `${min}:${sec}`
     }else{
-        totalR = `${totalQm}:${totalQs}`
-    }
+        if(totalQm === "00") {
+            totalR = `${totalQs} segundos`
+        }
+    }       
     return totalR
 }
 function start() { 
@@ -259,12 +275,18 @@ function timer() {
     }
     if(minute == 0 && second == 30) {
         document.querySelector('.tempo').style.backgroundColor = "yellow"
-        alert(`${second} segundos restantes`);
+        Swal.fire({ 
+            title:`${second} segundos restantes`,
+            confirmButtonText:'OK'
+        })
     }
     if(minute == 0 && second == 15) {
         document.querySelector('.tempo').style.backgroundColor = "red"
         document.querySelector('.tempo').style.color = "#fff"
-        alert(`${second} segundos restantes`);
+        Swal.fire({ 
+            title:`${second} segundos restantes`,
+            confirmButtonText:'OK'
+        })
     }
     if(minute == 0 && second == 0) {
         pause()
