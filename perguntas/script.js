@@ -23,7 +23,7 @@ if(typeof data === 'object') {
     nSA = selecionados
     proxima(numPergunta)
 }else{
-    throw new Error('Sem conexão com a planilha dos dados');
+    throw new Error('Sem conexão com a Planilha dos dados');
 }
 
 //clique alternativa
