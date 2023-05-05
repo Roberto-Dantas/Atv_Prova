@@ -236,28 +236,16 @@ function definirTR(d) {
     let totalQm = questaoData.tempo-1 - minute
     totalQm = returnData(totalQm)
     
+    let min = returnData(minute)
+    let sec = returnData(second)
+    
     if(d) {
-        var min
-        var sec
-        if(minute <= 10) {
-            min = `0${minute}`
-        }else{
-            min = minute
-        }
-        
-        if(sec <= 10) {
-            sec = `0${second}`
-        }else{
-            sec = second
-        }
-        
         totalR = `${min}:${sec}`
+        return totalR
     }else{
-        if(totalQm === "00") {
-            totalR = `${totalQs} segundos`
-        }
+        totalR = `${totalQs} segundos`
+        return totalR
     }       
-    return totalR
 }
 function start() { 
     pause(); 
@@ -311,7 +299,8 @@ function timer() {
 } 
 
 function returnData(input) { 
-    return input >= 10 ? input : `0${input}` 
+    return input >= 10 ? input : `0${input}`
+    return input == 0 ? `0${input}` : input
 }
 
 
