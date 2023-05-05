@@ -12,16 +12,13 @@ let data = await fetch('https://docs.google.com/spreadsheets/d/1Q0KVNUwzLHKFT9Hz
 
 const numeros = []
 var nSA
-if(data) {
-    for(var i = 0; i <= data.table.rows.length -1; i++){
+
+for(var i = 0; i <= data.table.rows.length -1; i++){
         numeros[i] = i
     }
     const selecionados = selecionarAleatorio(numeros,questaoData.qntQ);
     nSA = selecionados
     proxima(numPergunta)
-}else{
-    throw new Error('Sem conexão com a planilha dos dados');
-}
 
 //clique alternativa
 const escolhida = []
