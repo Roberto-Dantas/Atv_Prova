@@ -9,15 +9,22 @@ let totalR
        
 //Banco de dados? NÃO
 let data = await fetch('https://docs.google.com/spreadsheets/d/1Q0KVNUwzLHKFT9HzdzEB9qbuEwX2KYwBPllTGX1zxIE/gviz/tq?tqx=out:json').then(res => res.text()).then(text => JSON.parse(text.substr(47).slice(0, -2)));
-
 const numeros = []
 var nSA
-setTimeout(function(){for(var i = 0; i <= data.table.rows.length -1; i++){
-        numeros[i] = i;
-    };
+
+while(typeof data != 'object'){
+    data = await fetch('https://docs.google.com/spreadsheets/d/1Q0KVNUwzLHKFT9HzdzEB9qbuEwX2KYwBPllTGX1zxIE/gviz/tq?tqx=out:json').then(res => res.text()).then(text => JSON.parse(text.substr(47).slice(0, -2)));
+}
+if(typeof data === 'object') {
+    for(var i = 0; i <= data.table.rows.length -1; i++){
+        numeros[i] = i
+    }
     const selecionados = selecionarAleatorio(numeros,questaoData.qntQ);
-    nSA = selecionados;
-    proxima(numPergunta);},1000)
+    nSA = selecionados
+    proxima(numPergunta)
+}else{
+    throw new Error('Sem conexão com a planilha dos dados');
+}
 
 //clique alternativa
 const escolhida = []
@@ -32,7 +39,8 @@ document.querySelectorAll('.inputs li').forEach(alternativa => {
             cancelButtonText:'NÃO'
         }).then((pass) => { 
             if (pass.isConfirmed) {
-                escolhida[numPergunta-1] = {a:alternativa.id,t:`${minute}:${second}`}
+                definirTR()
+                escolhida[numPergunta-1] = {a:alternativa.id,t:`${totalR}`}
                 proxima(numPergunta)
             }
         })
