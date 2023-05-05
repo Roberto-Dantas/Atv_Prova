@@ -12,13 +12,12 @@ let data = await fetch('https://docs.google.com/spreadsheets/d/1Q0KVNUwzLHKFT9Hz
 
 const numeros = []
 var nSA
-
-for(var i = 0; i <= data.table.rows.length -1; i++){
-        numeros[i] = i
-    }
+setTimeout(function(){for(var i = 0; i <= data.table.rows.length -1; i++){
+        numeros[i] = i;
+    };
     const selecionados = selecionarAleatorio(numeros,questaoData.qntQ);
-    nSA = selecionados
-    proxima(numPergunta)
+    nSA = selecionados;
+    proxima(numPergunta);},1000)
 
 //clique alternativa
 const escolhida = []
