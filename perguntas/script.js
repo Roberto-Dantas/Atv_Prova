@@ -1,9 +1,18 @@
 //Principais variaveis
 const questaoData = JSON.parse(localStorage.getItem('questaoData'))
 let numPergunta = 0; 
-let acertos = 0;
-let minute = questaoData.tempo; 
-let second = 0; 
+let tempo_total = 0;
+let minTotal = 0;
+let minute = 0
+let second = (questaoData.tempo * 60)/questaoData.qntQ
+let second_porPergunta = second
+while(second >= 60){
+    minute = minute +1
+    second = second -60
+}
+second = second+1
+let acertos = 0; 
+let qts_naoR = 0;
 let cron;
 let totalR
        
@@ -21,11 +30,12 @@ if(typeof data === 'object') {
     }
     const selecionados = selecionarAleatorio(numeros,questaoData.qntQ);
     nSA = selecionados
-    proxima(numPergunta)
+    document.getElementById('minute').innerText = returnData(minute); 
+    document.getElementById('second').innerText = returnData(second_porPergunta); 
+    inicio()
 }else{
     throw new Error('Sem conexão com a planilha dos dados');
 }
-
 //clique alternativa
 const escolhida = []
 
@@ -41,18 +51,36 @@ document.querySelectorAll('.inputs li').forEach(alternativa => {
             if (pass.isConfirmed) {
                 definirTR(true)
                 escolhida[numPergunta-1] = {a:alternativa.id,t:`${totalR}`}
+                document.getElementById('minute').innerText = returnData(minute); 
+        document.getElementById('second').innerText = returnData(second_porPergunta); 
                 proxima(numPergunta)
             }
         })
     })
 })
 
+function inicio() {
+    Swal.fire({ 
+            title:`Os ${questaoData.tempo} min, foram divididos em ${questaoData.qntQ} questões.`,
+            text:`Cada uma delas terá um limite de ${second-1} seg`,
+            confirmButtonText:'Iniciar'
+        }).then((pass) => { 
+            if (pass.isConfirmed) {
+                document.getElementById('minute').innerText = returnData(minute); 
+                document.getElementById('second').innerText = returnData(second_porPergunta); 
+                proxima(numPergunta)
+            }else{
+                document.getElementById('minute').innerText = returnData(minute); 
+                document.getElementById('second').innerText = returnData(second_porPergunta); 
+                proxima(numPergunta)
+            }
+        })
+}
+
 //Inserção da perguntas
 function proxima(num) {
-    if(num === 0) {
-        start()
-    }
     if(num != questaoData.qntQ) {
+        start()
         document.querySelector('.numQuestoes h4').innerHTML = `Questões ${numPergunta+1} de ${questaoData.qntQ}`
         document.querySelector('.questoes h2').innerHTML = data.table.rows[nSA[numPergunta]].c[0].v
         
@@ -74,11 +102,19 @@ function proxima(num) {
             }            
         })
     numPergunta++
-    }else{    
-        definirTR()
+    }else{
+        pause()
+        tempoTot()
+        let textFimSwal
+        if(qts_naoR == 0) {
+            textFimSwal = `As ${questaoData.qntQ} questões foram finalizadas em ${totalR}`
+        }
+        else{
+            textFimSwal = `Foram finalizadas ${questaoData.qntQ - qts_naoR} questões, e não finalizadas: ${qts_naoR} questões, em um total de ${totalR}`
+        }
         Swal.fire({ 
             title:'Chegou ao fim do questionário',
-            text: `As ${questaoData.qntQ} questões foram finalizadas em ${totalR}`,
+            text: textFimSwal,
             confirmButtonText:'OK'
         })
         finalizar()
@@ -87,10 +123,8 @@ function proxima(num) {
 //Inserção perguntas erradas e certas e os dados
 const divElemento=[],div1Elemento=[],h2Elemento=[],div2Elemento=[],spanElemento=[],div3Elemento=[],liElemento=[],ulElemento=[],liElemento1=[],liElemento2=[],liElemento3=[],liElemento4=[],liElemento5=[],brElemento=[]
 
-function finalizar(tE) {
-    pause()
-    localStorage.clear()
-     document.querySelector('.conteudo').style.marginTop="10%"
+function finalizar(tE){
+    document.querySelector('.conteudo').style.marginTop="10%"
     document.querySelector('.bloco').innerHTML = "<div class='parteIF'></div><div class='parteQ'><div>";
     
     //Caso o tempo acabe
@@ -164,10 +198,15 @@ function finalizar(tE) {
 }
 function escritaIf(qT,nQ) {
     if(qT === nQ) {
-        document.querySelector('.parteIF').innerHTML = `<button>Voltar ao Inicio</button></br></br></br></br><h2>Das ${questaoData.qntQ} questões, você acertou ${acertos} e finalizou em ${totalR} de ${questaoData.tempo}min</h2></br></br>`
-    }else{
-        document.querySelector('.parteIF').innerHTML = `<button>Voltar ao Inicio</button></br></br></br></br><h2>Das ${questaoData.qntQ} questões, você fez ${nQ+1}, então você NÃO FINALIZOU dentro do tempo limite (${questaoData.tempo}min)</h2></br></br>`
+        if(qts_naoR == 0) {
+            document.querySelector('.parteIF').innerHTML = `<button>Voltar ao Inicio</button></br></br></br></br><h2>Das ${questaoData.qntQ} questões, você acertou ${acertos} e finalizou em ${totalR} de ${questaoData.tempo}min</h2></br></br>`
+        }else{
+            document.querySelector('.parteIF').innerHTML = `<button>Voltar ao Inicio</button></br></br></br></br><h2>Das ${questaoData.qntQ} questões, não respondeu ${qts_naoR}</h2><h2>Um total de ${acertos} acertos e não completou o questionário de ${questaoData.tempo}min</h2></br></br>`
+        }
     }
+    //else{
+        //document.querySelector('.parteIF').innerHTML = `<button>Voltar ao Inicio</button></br></br></br></br><h2>Das ${questaoData.qntQ} questões, você fez ${nQ+1}, então você NÃO FINALIZOU dentro do tempo limite (${questaoData.tempo}min)</h2></br></br>`
+    //}
     document.querySelector('.parteIF button').addEventListener('click', () => {window.location.href='./../index.html'})
 }    
 //validacao
@@ -229,16 +268,77 @@ function validar(numQts) {
     }
 }
 
+
+//Novo temporizador 
+function pause() { 
+    clearInterval(cron);
+}
+function timer() { 
+    if(minute == 0 && second >= 5) {
+        document.querySelector('.tempo').style.backgroundColor = "#fff"
+        document.querySelector('.tempo').style.color = "#000"
+    }
+    if(minute == 0 && second == 5) {
+        document.querySelector('.tempo').style.backgroundColor = "red"
+        document.querySelector('.tempo').style.color = "#fff"
+        
+    }
+    if(minute == 0 && second == 0) {
+        
+        document.querySelector('.tempo').style.backgroundColor = "#000"
+        document.querySelector('.tempo').style.color = "#fff"
+        document.getElementById('minute').innerText = '00'; 
+        document.getElementById('second').innerText = '00';
+        tempo_total = tempo_total + second_porPergunta
+        escolhida[numPergunta-1] = {a:"Usuário não respondeu!",t:"Não respondida"}
+        qts_naoR = qts_naoR +1
+        Swal.fire({ 
+            title:'TEMPO ESGOTADO',
+            customClass: { 
+                container: 'tempo-esgotado-swal'
+            },
+            confirmButtonText:'OK',
+        })
+        proxima(numPergunta)
+    }
+    else{
+        second--
+        document.getElementById('minute').innerText = returnData(minute); 
+        document.getElementById('second').innerText = returnData(second); 
+    }
+} 
+
+function tempoTot() {
+    if(tempo_total >= 60) {
+        tempo_total = tempo_total-60
+        minTotal = minTotal +1
+        if(tempo_total > 0) {
+            tempo_total = `${returnData(minTotal)}min e ${returnData(tempo_total)}seg`
+            
+        }
+        else{
+            tempo_total = `${returnData(minTotal)}min`
+        }
+    }
+    else{
+        tempo_total = `${returnData(tempo_total)} segundos`
+    }
+    totalR = tempo_total
+}
+
+
+
 //TEMPORIZADOR
-function definirTR(d) {
-    let totalQs = 60 - second
+
+function definirTR(d) {    
+    let totalQs = tempo_total
     totalQs = returnData(totalQs)
     let totalQm = questaoData.tempo-1 - minute
     totalQm = returnData(totalQm)
     
     let min = returnData(minute)
-    let sec = returnData(second)
-    
+    let sec = returnData(second_porPergunta-second)
+    tempo_total = tempo_total + (second_porPergunta -second)
     if(d) {
         totalR = `${min}:${sec}`
         return totalR
@@ -248,56 +348,10 @@ function definirTR(d) {
     }       
 }
 function start() { 
-    pause(); 
+    pause();
+    second = second_porPergunta
     cron = setInterval(() => { timer(); }, 1000);
 }
-
-function pause() { 
-    clearInterval(cron);
-} 
-
-function timer() { 
-    if (second == 0 && minute != 0) { 
-        second = 60
-        minute-- 
-    }
-    if(minute == 0 && second == 30) {
-        document.querySelector('.tempo').style.backgroundColor = "yellow"
-        Swal.fire({ 
-            title:`${second} segundos restantes`,
-            confirmButtonText:'OK'
-        })
-    }
-    if(minute == 0 && second == 15) {
-        document.querySelector('.tempo').style.backgroundColor = "red"
-        document.querySelector('.tempo').style.color = "#fff"
-        Swal.fire({ 
-            title:`${second} segundos restantes`,
-            confirmButtonText:'OK'
-        })
-    }
-    if(minute == 0 && second == 0) {
-        pause()
-        document.querySelector('.tempo').style.backgroundColor = "#000"
-        document.querySelector('.tempo').style.color = "#fff"
-        document.getElementById('minute').innerText = '00'; 
-        document.getElementById('second').innerText = '00';
-        Swal.fire({ 
-            title:'TEMPO ESGOTADO',
-            customClass: { 
-                container: 'tempo-esgotado-swal'
-            },
-            confirmButtonText:'OK',
-        })
-        finalizar(numPergunta)
-    }
-    else{
-        second--
-        document.getElementById('minute').innerText = returnData(minute); 
-        document.getElementById('second').innerText = returnData(second); 
-    }
-} 
-
 function returnData(input) { 
     return input >= 10 ? input : `0${input}`
     return input == 0 ? `0${input}` : input
