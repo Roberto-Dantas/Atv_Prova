@@ -1,0 +1,118 @@
+*{ 
+    margin: 0; 
+    padding: 0; 
+    border: 0; 
+    outline: 0; 
+    list-style: none; 
+    box-sizing: border-box;
+}
+body{
+    font-family:Arial, sans-serif;
+    background-color: #DEB887;
+}
+.conteudo{
+    width: 90%;
+    margin-top: 10%;
+    margin-left:5%;
+}
+.main{
+    background: #412800;
+    width: 70%;
+    margin-left: 15%;
+    border-radius: 15px;
+    box-shadow: 5px 10px 15px #000;
+}
+.bloco{
+    padding: 50px;
+}
+.topo{
+    width: 100%;
+    text-align: center;
+    display:flex;
+}
+.topo .numQuestoes{
+    width: 75%;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+}
+.tempo{
+    width: 25%;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 5px 10px 15px #000;
+}
+.questoes{
+    padding: 20px;
+    background: #fff;
+}
+.questoes li{
+    padding: 8px;
+    border-radius: 3px;
+    cursor:pointer;
+}
+.questoes li:hover{
+    background-color: #DAA520;
+    color: #000;
+}
+.parteIF{
+    color:#fff;
+    padding: 15px;
+    text-align: center;
+}
+.parteIF button{
+    width: 100%;
+    padding: 10px;
+    box-shadow: 5px 10px 15px #000;
+}
+.parteQ{
+    
+}
+.resp{
+    background: #fff;
+    border: 5px solid #000;
+    width:90%;
+    margin-left:5%;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 5px 10px 15px #000;
+}
+.topoFinal{
+    width: 100%;
+    display:flex;
+}
+.perguntaFinal{
+    width: 75%;
+    padding: 10px;
+}
+.tempoFinal{
+    width: 20%;
+    margin-right: 5%;
+    padding: 10px;
+    border-top: 5px solid #000;
+    color:#000;
+    text-align: center;
+    border-radius: 5px;
+}
+.resp ul{
+    padding: 20px;
+}
+.resp ul li{
+    padding: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.tempo-esgotado-swal {
+    background-color: red;
+}
+
+.backToInicio{
+    cursor: pointer;
+}
+.correct{
+    background: green;
+}
+.notCorrect{
+    background: #DAA520;
+}

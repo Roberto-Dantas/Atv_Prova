@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Login</title>
+        <link rel="stylesheet" href="./style.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.7/dist/sweetalert2.min.css">
+    </head>
+    <body>
+        <header>
+            <nav class="container">
+                <div class="logo-box">
+                    <img src="./IMG/logo.png" class="logo">
+                </div>
+            </nav>
+        </header>
+        <div class="form">
+            <div class="sub-form" id="sub-form">
+                <div class="upper-form">
+                    <h2>Login Form</h2>
+                    <label for="username">Usuário</label>
+                    <input type="text" id="username" name="username">
+                    <br>
+                    <label for="password0">Senha</label>
+                    <input type="password" id="password" name="password0">
+                    <br>
+                    <div class="btn">
+                        <button id="login-form">Login</button>
+                    </div>
+                    <br>
+                    <div>
+                        <p>Caso queira fazer-<b id="loginAutomatico">Login Automático</b></p>
+                    </div>
+                    <br>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.7/dist/sweetalert2.all.min.js"></script>
+        <script src="./script.js"></script>
+    </body>
+</html>
